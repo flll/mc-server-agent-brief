@@ -1,6 +1,6 @@
-﻿# Minecraft Server Setup 窶・Agent Brief for AI Agents
+﻿# Minecraft Server Setup — Agent Brief for AI Agents
 
-**Language / 險隱・*: [English](../en/minecraft-server-agent-brief.md) | [譌･譛ｬ隱枉(../ja/minecraft-server-agent-brief.md)
+**Language / 言語**: [English](../en/minecraft-server-agent-brief.md) | [日本語](../ja/minecraft-server-agent-brief.md)
 
 > **Version**: 1.0  
 > **Audience**: AI agents (Cursor, Claude Code, etc.)  
@@ -10,24 +10,24 @@
 
 ## Table of Contents
 
-- [Chapter 0 窶・How to Use This Brief](#chapter-0--how-to-use-this-brief)
-- [Chapter 1 窶・Pre-Deployment Discovery](#chapter-1--pre-deployment-discovery)
-- [Chapter 2 窶・Host Environment Setup](#chapter-2--host-environment-setup)
-- [Chapter 3 窶・Bind Mount Persistence + I/O Performance Optimization](#chapter-3--bind-mount-persistence--io-performance-optimization)
-- [Chapter 4 窶・Standard Project Layout](#chapter-4--standard-project-layout)
-- [Chapter 5 窶・Makefile Reference](#chapter-5--makefile-reference)
-- [Chapter 6 窶・Architecture Decision Flow](#chapter-6--architecture-decision-flow)
-- [Chapter 7 窶・Use-Case Procedures](#chapter-7--use-case-procedures)
-- [Chapter 8 窶・Environment Variable Reference](#chapter-8--environment-variable-reference)
-- [Chapter 9 窶・Agent Execution Checklist](#chapter-9--agent-execution-checklist)
-- [Chapter 10 窶・Security](#chapter-10--security)
-- [Chapter 11 窶・Troubleshooting](#chapter-11--troubleshooting)
-- [Chapter 12 窶・Sample User Prompts](#chapter-12--sample-user-prompts)
-- [Chapter 13 窶・Reference Links](#chapter-13--reference-links)
+- [Chapter 0 — How to Use This Brief](#chapter-0--how-to-use-this-brief)
+- [Chapter 1 — Pre-Deployment Discovery](#chapter-1--pre-deployment-discovery)
+- [Chapter 2 — Host Environment Setup](#chapter-2--host-environment-setup)
+- [Chapter 3 — Bind Mount Persistence + I/O Performance Optimization](#chapter-3--bind-mount-persistence--io-performance-optimization)
+- [Chapter 4 — Standard Project Layout](#chapter-4--standard-project-layout)
+- [Chapter 5 — Makefile Reference](#chapter-5--makefile-reference)
+- [Chapter 6 — Architecture Decision Flow](#chapter-6--architecture-decision-flow)
+- [Chapter 7 — Use-Case Procedures](#chapter-7--use-case-procedures)
+- [Chapter 8 — Environment Variable Reference](#chapter-8--environment-variable-reference)
+- [Chapter 9 — Agent Execution Checklist](#chapter-9--agent-execution-checklist)
+- [Chapter 10 — Security](#chapter-10--security)
+- [Chapter 11 — Troubleshooting](#chapter-11--troubleshooting)
+- [Chapter 12 — Sample User Prompts](#chapter-12--sample-user-prompts)
+- [Chapter 13 — Reference Links](#chapter-13--reference-links)
 
 ---
 
-## Chapter 0 窶・How to Use This Brief
+## Chapter 0 — How to Use This Brief
 
 ### 0.1 Audience and Purpose
 
@@ -61,7 +61,7 @@ Following this document, the agent generates and configures:
 | **Docker restart enabled** | compose `restart: unless-stopped` (or `always`) **required** |
 | **Manual operations** | Daily ops via `make up` / `make logs` / `make backup`, etc. Backups manual only |
 | **Aikar flags always on** | `USE_AIKAR_FLAGS: "TRUE"` **required** on all Java servers |
-| **Auto-generated MOTD** | Set `MOTD=ﾂｧ6${SERVER_NAME}ﾂｧr` automatically after `SERVER_NAME` is confirmed |
+| **Auto-generated MOTD** | Set `MOTD=§6${SERVER_NAME}§r` automatically after `SERVER_NAME` is confirmed |
 
 ### 0.3 Agent Workflow Overview
 
@@ -81,7 +81,7 @@ Following this document, the agent generates and configures:
 At completion, all of the following must be satisfied:
 
 - [ ] **1.** `SERVER_NAME` conforms to slug rules and is reflected in the root directory name, `COMPOSE_PROJECT_NAME`, and backup filenames
-- [ ] **2.** `MOTD=ﾂｧ6${SERVER_NAME}ﾂｧr` is set in `.env` and compose
+- [ ] **2.** `MOTD=§6${SERVER_NAME}§r` is set in `.env` and compose
 - [ ] **3.** All persistent data uses bind mounts (`./data:/data`) only; no named volumes exist
 - [ ] **4.** compose has `restart: unless-stopped` (or `always`)
 - [ ] **5.** Java servers have `USE_AIKAR_FLAGS: "TRUE"`
@@ -93,7 +93,7 @@ At completion, all of the following must be satisfied:
 
 ---
 
-## Chapter 1 窶・Pre-Deployment Discovery
+## Chapter 1 — Pre-Deployment Discovery
 
 ### 1.0 Work Order (Strict)
 
@@ -102,7 +102,7 @@ At completion, all of the following must be satisfied:
 Order after confirmation:
 
 1. Confirm and validate `SERVER_NAME` with the user
-2. Auto-set `MOTD=ﾂｧ6${SERVER_NAME}ﾂｧr` in `.env` (no separate question needed)
+2. Auto-set `MOTD=§6${SERVER_NAME}§r` in `.env` (no separate question needed)
 3. Create the project under `~/servers/${SERVER_NAME}/` (Linux) or inside WSL home
 4. compose / Makefile / backup scripts all reference `SERVER_NAME`
 5. compose must include `USE_AIKAR_FLAGS: "TRUE"` and `MOTD`
@@ -116,10 +116,10 @@ Order after confirmation:
 | 2 | Edition | Java / Bedrock / Java+Bedrock | Java |
 | 3 | Server type | Vanilla / Paper / Purpur / Fabric / Forge / NeoForge | Paper |
 | 4 | Content | Vanilla / plugins / modpack / custom MODs | Plugins |
-| 5 | Modpack source | CurseForge / Modrinth / FTB / local zip | 窶・|
+| 5 | Modpack source | CurseForge / Modrinth / FTB / local zip | — |
 | 6 | MC version | e.g. `1.21.1` | Latest stable |
 | 7 | Concurrent players | Number | 10 |
-| 8 | Allocated RAM | GB | players ﾃ・0.5窶・ GB (ﾃ・ with MODs) |
+| 8 | Allocated RAM | GB | players × 0.5–1 GB (×2 with MODs) |
 | 9 | Exposure | LAN / internet / local only | LAN |
 | 10 | Extras | RCON / whitelist / backup / proxy / Dynmap | RCON + backup |
 
@@ -133,8 +133,8 @@ During discovery, present the following to the user:
 |--------|----------|----------|
 | Lowercase letters, digits, hyphens only | `my-paper-server`, `atm10` | `My Server` (spaces) |
 | Must start with a letter | `survival-01` | `01-survival` (starts with digit) |
-| 3窶・2 characters | `lobby` | `a` (too short) |
-| Avoid reserved words | 窶・| `data`, `backups`, `config` |
+| 3–32 characters | `lobby` | `a` (too short) |
+| Avoid reserved words | — | `data`, `backups`, `config` |
 
 **Validation regex**:
 
@@ -150,47 +150,47 @@ During discovery, present the following to the user:
 | Backup filename | `${SERVER_NAME}_data_${TIMESTAMP}.tar.gz` | `survival-2024_data_20260526_143000.tar.gz` |
 | Compose project name | `COMPOSE_PROJECT_NAME=${SERVER_NAME}` | Reflected in container name prefix |
 | `.env` variable | `SERVER_NAME=survival-2024` | Referenced by all scripts |
-| **MOTD (required)** | Auto-generated from `SERVER_NAME` | `ﾂｧ6survival-2024ﾂｧr` |
+| **MOTD (required)** | Auto-generated from `SERVER_NAME` | `§6survival-2024§r` |
 
-### 1.3 MOTD 窶・Simple Display (Required, Linked to `SERVER_NAME`)
+### 1.3 MOTD — Simple Display (Required, Linked to `SERVER_NAME`)
 
-**Policy**: The **server name must be recognizable** in the server list. Do not ask about MOTD separately 窶・**auto-generate from `SERVER_NAME`**.
+**Policy**: The **server name must be recognizable** in the server list. Do not ask about MOTD separately — **auto-generate from `SERVER_NAME`**.
 
 **Requirements**:
 
 - **`MOTD` must be set** in compose / `.env` (never omit)
 - **Single line, simple**: display the server name only (no multi-line or excessive decoration)
-- **Once `SERVER_NAME` is set, MOTD is set** 窶・no extra questions
+- **Once `SERVER_NAME` is set, MOTD is set** — no extra questions
 
 **Default generation rule**:
 
 ```
-MOTD = "ﾂｧ6" + SERVER_NAME + "ﾂｧr"
+MOTD = "§6" + SERVER_NAME + "§r"
 ```
 
-Example: `SERVER_NAME=survival-2024` 竊・`MOTD=ﾂｧ6survival-2024ﾂｧr`
+Example: `SERVER_NAME=survival-2024` → `MOTD=§6survival-2024§r`
 
 **compose template**:
 
 ```yaml
 environment:
   OVERRIDE_SERVER_PROPERTIES: "TRUE"
-  MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"
+  MOTD: "§6${SERVER_NAME}§r"
 ```
 
 **Explicit setting in `.env`**:
 
 ```dotenv
 SERVER_NAME=survival-2024
-MOTD=ﾂｧ6survival-2024ﾂｧr
+MOTD=§6survival-2024§r
 ```
 
 **Optional customization** (only when the user explicitly requests it):
 
-- Override MOTD only when a different display name is desired (e.g. `ﾂｧ6My Survival Serverﾂｧr`)
+- Override MOTD only when a different display name is desired (e.g. `§6My Survival Server§r`)
 - Otherwise use the `SERVER_NAME`-based default
 
-### 1.4 `USE_AIKAR_FLAGS` 窶・Always Enabled (Required)
+### 1.4 `USE_AIKAR_FLAGS` — Always Enabled (Required)
 
 - Set `USE_AIKAR_FLAGS: "TRUE"` on **all Java server configurations** (never omit or set `FALSE`)
 - Fixed requirement for JVM performance; non-negotiable
@@ -200,7 +200,7 @@ MOTD=ﾂｧ6survival-2024ﾂｧr
 
 | Configuration | Minimum RAM | Recommended RAM |
 |------|----------|----------|
-| Vanilla, 1窶・ players | 2GB | 4GB |
+| Vanilla, 1–5 players | 2GB | 4GB |
 | Paper + plugins, 10 players | 4GB | 6GB |
 | Light MODs (Fabric) | 4GB | 6GB |
 | Medium modpack | 8GB | 12GB |
@@ -210,7 +210,7 @@ MOTD=ﾂｧ6survival-2024ﾂｧr
 
 ---
 
-## Chapter 2 窶・Host Environment Setup
+## Chapter 2 — Host Environment Setup
 
 ### 2.1 Common Prerequisites
 
@@ -222,7 +222,7 @@ MOTD=ﾂｧ6survival-2024ﾂｧr
 | Bedrock port | 19132/UDP |
 | RCON port | 25575/TCP (when enabled) |
 | Disk | Minimum 10GB. Modpacks 20GB+ |
-| OS auto-start | **Not needed** 窶・do not configure systemd / cron timer |
+| OS auto-start | **Not needed** — do not configure systemd / cron timer |
 | Container auto-restart | Handled by compose `restart:` policy |
 
 ### 2.2 Linux (Ubuntu / Debian Example)
@@ -260,8 +260,8 @@ cd ~/servers/${SERVER_NAME}
 #### 2.2.4 UID / GID Configuration
 
 ```bash
-id -u   # 竊・set as UID in .env
-id -g   # 竊・set as GID in .env
+id -u   # → set as UID in .env
+id -g   # → set as GID in .env
 ```
 
 Pass these via compose `environment` so container file ownership matches the host user.
@@ -272,7 +272,7 @@ Pass these via compose `environment` so container file ownership matches the hos
 - Scheduled backups via cron **forbidden**
 - Configurations that invoke `docker compose up` from systemd **forbidden**
 
-### 2.3 Windows 窶・Two Patterns
+### 2.3 Windows — Two Patterns
 
 #### Pattern A (Recommended): WSL2 + Docker Desktop
 
@@ -282,7 +282,7 @@ Pass these via compose `environment` so container file ownership matches the hos
 wsl --install
 ```
 
-2. Install Docker Desktop 竊・enable the target distribution under **Settings 竊・Resources 竊・WSL Integration**
+2. Install Docker Desktop → enable the target distribution under **Settings → Resources → WSL Integration**
 
 3. **Place the project inside the WSL filesystem**:
 
@@ -302,10 +302,10 @@ cd ~/servers/${SERVER_NAME}
 wsl -d Ubuntu --cd ~/servers/survival-2024 make up
 ```
 
-#### Pattern B: Docker Desktop + Windows Native Path 窶・Not Recommended
+#### Pattern B: Docker Desktop + Windows Native Path — Not Recommended
 
 - bind mount to `C:\Users\...` is **treated as nearly forbidden**
-- If unavoidable, document in README: "chunk saves and MOD downloads may be ~10ﾃ・slower"
+- If unavoidable, document in README: "chunk saves and MOD downloads may be ~10× slower"
 - Run Makefile inside WSL
 
 **Velocity mount difference** (Windows native only):
@@ -318,7 +318,7 @@ wsl -d Ubuntu --cd ~/servers/survival-2024 make up
 - ./velocity.toml:/config/velocity.toml
 ```
 
-#### 2.3.1 Windows Firewall (PowerShell 窶・Administrator)
+#### 2.3.1 Windows Firewall (PowerShell — Administrator)
 
 ```powershell
 New-NetFirewallRule -DisplayName "Minecraft Java" -Direction Inbound -Protocol TCP -LocalPort 25565 -Action Allow
@@ -380,11 +380,11 @@ Get-PSDrive C | Select-Object Used,Free
 
 ---
 
-## Chapter 3 窶・Bind Mount Persistence + I/O Performance Optimization
+## Chapter 3 — Bind Mount Persistence + I/O Performance Optimization
 
 > **This chapter is the core of the brief.** Agents must strictly follow these rules.
 
-### 3.1 Persistence Policy 窶・Bind Mount Only (Strict)
+### 3.1 Persistence Policy — Bind Mount Only (Strict)
 
 **Required**: All persistent data must use bind mounts to host directories.
 
@@ -412,8 +412,8 @@ services:
 | Measure | Linux | Windows (WSL2) | Reason |
 |------|-------|----------------|------|
 | Project placement | Local ext4/xfs | **`~/servers/${SERVER_NAME}` (inside WSL ext4)** | Native FS = full cache efficiency |
-| Forbidden paths | 窶・| `/mnt/c/Users/...` | Random I/O over 9p is very slow |
-| Docker Desktop | 窶・| Settings 竊・WSL2 engine enabled | ext4 bind inside Linux VM |
+| Forbidden paths | — | `/mnt/c/Users/...` | Random I/O over 9p is very slow |
+| Docker Desktop | — | Settings → WSL2 engine enabled | ext4 bind inside Linux VM |
 | `.dockerignore` | `data/`, `backups/`, `*.log` | Same | Exclude large data from build context |
 | Image pull | `pull_policy: daily` or pin version | Same | Avoid unnecessary re-pulls |
 | MC/JAR cache | server.jar etc. kept under `data/` | Same | Faster startup from second run onward |
@@ -423,7 +423,7 @@ services:
 
 ### 3.3 Placement Check (Required for Agents)
 
-Run inside WSL 窶・**FAIL** if path contains `/mnt/c`:
+Run inside WSL — **FAIL** if path contains `/mnt/c`:
 
 ```bash
 make check-path
@@ -448,7 +448,7 @@ services:
       EULA: "TRUE"
       USE_AIKAR_FLAGS: "TRUE"          # always required
       OVERRIDE_SERVER_PROPERTIES: "TRUE"
-      MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"       # auto from SERVER_NAME; single line
+      MOTD: "§6${SERVER_NAME}§r"       # auto from SERVER_NAME; single line
       UID: "${UID:-1000}"
       GID: "${GID:-1000}"
       TYPE: "${TYPE:-PAPER}"
@@ -491,9 +491,9 @@ services:
 | Periodic start via cron / systemd timer | **NG** |
 | Periodic backup via cron / Task Scheduler | **NG** |
 
-### 3.6 Persistence Target 窶・Entire `./data` Directory
+### 3.6 Persistence Target — Entire `./data` Directory
 
-**Backup target is the entire `./data`** (not just the world 窶・includes mods / plugins / config / JAR cache, etc.).
+**Backup target is the entire `./data`** (not just the world — includes mods / plugins / config / JAR cache, etc.).
 
 | Container path | Contents | Backup |
 |---------------|------|-------------|
@@ -517,13 +517,13 @@ If `data/` becomes root-owned:
 sudo chown -R $(id -u):$(id -g) ./data
 ```
 
-### 3.8 Backup Procedure 窶・Full Server Data (`make backup`)
+### 3.8 Backup Procedure — Full Server Data (`make backup`)
 
 **Policy**: Archive the **`./data` directory whole**. No world-only partial backups.
 
 **Filename format**: `${SERVER_NAME}_data_${TIMESTAMP}.tar.gz`
 
-**Linux / WSL** 窶・`scripts/backup.sh`:
+**Linux / WSL** — `scripts/backup.sh`:
 
 ```bash
 #!/usr/bin/env bash
@@ -537,7 +537,7 @@ tar -czf "backups/${SERVER_NAME}_data_${TS}.tar.gz" -C . data
 docker compose start mc
 ```
 
-**Windows PowerShell** 窶・`scripts/backup.ps1`:
+**Windows PowerShell** — `scripts/backup.ps1`:
 
 ```powershell
 # Recommended inside WSL. On native Windows, use tar command
@@ -572,46 +572,44 @@ make update    # internally: pull + up -d. ./data remains on bind mount
 
 ---
 
-## Chapter 4 窶・Standard Project Layout
+## Chapter 4 — Standard Project Layout
 
 **Root directory name = `SERVER_NAME`** (do not use fixed name `minecraft-server/`).
 
 ```
 ${SERVER_NAME}/                    # e.g. survival-2024/
-笏懌楳笏 Makefile
-笏懌楳笏 docker-compose.yml
-笏懌楳笏 docker-compose.override.yml    # optional (local overrides)
-笏懌楳笏 .dockerignore
-笏懌楳笏 .env.example
-笏懌楳笏 .env                           # gitignore
-笏懌楳笏 .gitignore
-笏懌楳笏 README.md
-笏懌楳笏 README.ja.md                   # optional: Japanese README
-笏懌楳笏 README.en.md                   # optional: English README
-笏懌楳笏 AGENTS.md                      # optional: agent instructions hub
-笏懌楳笏 AGENTS.ja.md                   # optional: Japanese agent instructions
-笏懌楳笏 AGENTS.en.md                   # optional: English agent instructions
-笏懌楳笏 docs/
-笏・  笏懌楳笏 en/
-笏・  笏・  笏披楳笏 minecraft-server-agent-brief.md
-笏・  笏披楳笏 ja/
-笏・      笏披楳笏 minecraft-server-agent-brief.md
-笏懌楳笏 config/
-笏・  笏披楳笏 plugins/                   # optional: local plugin injection
-笏懌楳笏 data/                          # bind mount target (gitignore)
-笏懌楳笏 backups/                       # ${SERVER_NAME}_data_*.tar.gz (gitignore)
-笏披楳笏 scripts/
-    笏懌楳笏 backup.sh
-    笏懌楳笏 backup.ps1
-    笏懌楳笏 restore.sh
-    笏披楳笏 restore.ps1
+├── Makefile
+├── docker-compose.yml
+├── docker-compose.override.yml    # optional (local overrides)
+├── .dockerignore
+├── .env.example
+├── .env                           # gitignore
+├── .gitignore
+├── README.md                      # optional: English README (default)
+├── README.ja.md                   # optional: Japanese README
+├── AGENTS.md                      # optional: agent instructions (English)
+├── AGENTS.ja.md                   # optional: Japanese agent instructions
+├── docs/
+│   ├── en/
+│   │   └── minecraft-server-agent-brief.md
+│   └── ja/
+│       └── minecraft-server-agent-brief.md
+├── config/
+│   └── plugins/                   # optional: local plugin injection
+├── data/                          # bind mount target (gitignore)
+├── backups/                       # ${SERVER_NAME}_data_*.tar.gz (gitignore)
+└── scripts/
+    ├── backup.sh
+    ├── backup.ps1
+    ├── restore.sh
+    └── restore.ps1
 ```
 
 ### 4.1 `.env.example` Header Fields
 
 ```dotenv
 SERVER_NAME=survival-2024
-MOTD=ﾂｧ6survival-2024ﾂｧr
+MOTD=§6survival-2024§r
 COMPOSE_PROJECT_NAME=survival-2024
 ```
 
@@ -640,7 +638,7 @@ forwarding.secret
 
 1. Server name (`SERVER_NAME`) and connection instructions
 2. Required RAM / disk / MC version
-3. First-time setup (`make init` 竊・edit `.env` 竊・`make up`)
+3. First-time setup (`make init` → edit `.env` → `make up`)
 4. Daily operations (`make help` listing)
 5. OS-specific notes (WSL2 recommended, etc.)
 6. Backup / restore procedure
@@ -649,7 +647,7 @@ forwarding.secret
 
 ---
 
-## Chapter 5 窶・Makefile Reference
+## Chapter 5 — Makefile Reference
 
 Use the Makefile as the **single entry point** for daily operations.
 
@@ -667,7 +665,7 @@ Use the Makefile as the **single entry point** for daily operations.
 | `status` | `docker compose ps` | |
 | `pull` | `docker compose pull` | |
 | `update` | pull + up -d | |
-| `backup` | RCON save 竊・stop 竊・tar entire `./data` 竊・start | `scripts/backup.sh` |
+| `backup` | RCON save → stop → tar entire `./data` → start | `scripts/backup.sh` |
 | `restore` | Restore entire `./data` with `RESTORE=...` | `scripts/restore.sh` |
 | `shell` | bash inside container | |
 | `rcon` | `make rcon CMD="list"` | Run RCON command |
@@ -720,25 +718,29 @@ restore:
 
 ---
 
-## Chapter 6 窶・Architecture Decision Flow
+## Chapter 6 — Architecture Decision Flow
 
 ```
 Requirements discovery
-    笏・    笆ｼ
+    │
+    ▼
 Confirm SERVER_NAME with user (highest priority)
-    笏・    笆ｼ
-Auto-set MOTD = ﾂｧ6${SERVER_NAME}ﾂｧr
-    笏・    笆ｼ
-OS check 笏笏 Windows 笏笏 WSL2 available? 笏笏 Yes 笏笏 Place inside WSL
-    笏・                   笏披楳笏 No 笏笏 Native (warning)
-    笏披楳笏 Linux 笏笏 ~/servers/${SERVER_NAME}/
-    笏・    笆ｼ
-Edition 笏笏 Java 笏笏 Type 笏笏 Plugins 竊・Paper (UC-A)
-    笏・                   笏懌楳笏 Modpack 竊・CF/MR (UC-B/C)
-    笏・                   笏懌楳笏 Custom MODs 竊・Fabric/Forge (UC-D)
-    笏・                   笏披楳笏 Multiple servers 竊・Velocity (UC-E)
-    笏懌楳笏 Bedrock 竊・UC-F
-    笏披楳笏 Java+Bedrock 竊・Geyser (UC-G)
+    │
+    ▼
+Auto-set MOTD = §6${SERVER_NAME}§r
+    │
+    ▼
+OS check ── Windows ── WSL2 available? ── Yes ── Place inside WSL
+    │                    └── No ── Native (warning)
+    └── Linux ── ~/servers/${SERVER_NAME}/
+    │
+    ▼
+Edition ── Java ── Type ── Plugins → Paper (UC-A)
+    │                    ├── Modpack → CF/MR (UC-B/C)
+    │                    ├── Custom MODs → Fabric/Forge (UC-D)
+    │                    └── Multiple servers → Velocity (UC-E)
+    ├── Bedrock → UC-F
+    └── Java+Bedrock → Geyser (UC-G)
 ```
 
 **Image selection**:
@@ -751,7 +753,7 @@ Edition 笏笏 Java 笏笏 Type 笏笏 Plugins 竊・Paper (UC-A)
 
 ---
 
-## Chapter 7 窶・Use-Case Procedures
+## Chapter 7 — Use-Case Procedures
 
 Each UC follows the same format:
 
@@ -800,7 +802,7 @@ services:
       MEMORY: "${MEMORY:-4G}"
       USE_AIKAR_FLAGS: "TRUE"
       OVERRIDE_SERVER_PROPERTIES: "TRUE"
-      MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"
+      MOTD: "§6${SERVER_NAME}§r"
       MAX_PLAYERS: "${MAX_PLAYERS:-10}"
       ENABLE_RCON: "${ENABLE_RCON:-TRUE}"
       RCON_PASSWORD: "${RCON_PASSWORD}"
@@ -882,7 +884,7 @@ make rcon CMD="list"
 
 #### Reference Links
 
-- [itzg/docker-minecraft-server 窶・Paper](https://docker-minecraft-server.readthedocs.io/en/latest/types-and-platforms/server-types/paper/)
+- [itzg/docker-minecraft-server — Paper](https://docker-minecraft-server.readthedocs.io/en/latest/types-and-platforms/server-types/paper/)
 - [Paper official](https://papermc.io/)
 
 ---
@@ -928,7 +930,7 @@ services:
       MEMORY: "${MEMORY:-8G}"
       USE_AIKAR_FLAGS: "TRUE"
       OVERRIDE_SERVER_PROPERTIES: "TRUE"
-      MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"
+      MOTD: "§6${SERVER_NAME}§r"
       UID: "${UID:-1000}"
       GID: "${GID:-1000}"
     volumes:
@@ -951,7 +953,7 @@ CurseForge has "client" and "server" zips. Point `CF_PAGE_URL` at the **client**
 
 #### First Startup
 
-First run involves **10窶・0 minutes** of downloads. Example log:
+First run involves **10–30 minutes** of downloads. Example log:
 
 ```
 [mc-image-helper] Downloading mod ...
@@ -989,7 +991,7 @@ services:
       MEMORY: "${MEMORY:-6G}"
       USE_AIKAR_FLAGS: "TRUE"
       OVERRIDE_SERVER_PROPERTIES: "TRUE"
-      MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"
+      MOTD: "§6${SERVER_NAME}§r"
       UID: "${UID:-1000}"
       GID: "${GID:-1000}"
     volumes:
@@ -1034,7 +1036,7 @@ services:
       MEMORY: "${MEMORY:-4G}"
       USE_AIKAR_FLAGS: "TRUE"
       OVERRIDE_SERVER_PROPERTIES: "TRUE"
-      MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"
+      MOTD: "§6${SERVER_NAME}§r"
       UID: "${UID:-1000}"
       GID: "${GID:-1000}"
     volumes:
@@ -1091,7 +1093,7 @@ services:
       MEMORY: "2G"
       USE_AIKAR_FLAGS: "TRUE"
       OVERRIDE_SERVER_PROPERTIES: "TRUE"
-      MOTD: "ﾂｧ6${SERVER_NAME}-lobbyﾂｧr"
+      MOTD: "§6${SERVER_NAME}-lobby§r"
       ONLINE_MODE: "FALSE"
       UID: "${UID:-1000}"
       GID: "${GID:-1000}"
@@ -1108,7 +1110,7 @@ services:
       MEMORY: "${MEMORY:-4G}"
       USE_AIKAR_FLAGS: "TRUE"
       OVERRIDE_SERVER_PROPERTIES: "TRUE"
-      MOTD: "ﾂｧ6${SERVER_NAME}-survivalﾂｧr"
+      MOTD: "§6${SERVER_NAME}-survival§r"
       ONLINE_MODE: "FALSE"
       UID: "${UID:-1000}"
       GID: "${GID:-1000}"
@@ -1208,7 +1210,7 @@ New-NetFirewallRule -DisplayName "Minecraft Bedrock" -Direction Inbound -Protoco
 
 #### Client Connection
 
-- Bedrock client 竊・"Servers" 竊・`<IP>:19132`
+- Bedrock client → "Servers" → `<IP>:19132`
 
 ---
 
@@ -1234,7 +1236,7 @@ services:
       MEMORY: "${MEMORY:-4G}"
       USE_AIKAR_FLAGS: "TRUE"
       OVERRIDE_SERVER_PROPERTIES: "TRUE"
-      MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"
+      MOTD: "§6${SERVER_NAME}§r"
       PLUGINS: |
         https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot
         https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot
@@ -1247,8 +1249,8 @@ services:
 
 #### Ports
 
-- 25565/TCP 窶・Java clients
-- 19132/UDP 窶・Bedrock clients
+- 25565/TCP — Java clients
+- 19132/UDP — Bedrock clients
 
 ---
 
@@ -1278,7 +1280,7 @@ services:
       MEMORY: "2G"
       USE_AIKAR_FLAGS: "TRUE"
       OVERRIDE_SERVER_PROPERTIES: "TRUE"
-      MOTD: "ﾂｧ6${SERVER_NAME}-devﾂｧr"
+      MOTD: "§6${SERVER_NAME}-dev§r"
       ONLINE_MODE: "FALSE"
       UID: "${UID:-1000}"
       GID: "${GID:-1000}"
@@ -1290,9 +1292,9 @@ services:
 
 #### Development Flow
 
-1. Gradle `build` 竊・generate `.jar`
+1. Gradle `build` → generate `.jar`
 2. Copy to `plugins-dev/`
-3. `make restart` or RCON `reload confirm` (not recommended 窶・prefer restart)
+3. `make restart` or RCON `reload confirm` (not recommended — prefer restart)
 
 #### Reference Links
 
@@ -1311,12 +1313,12 @@ GitOps deployment on a VPS. Auto-update via webhook.
 - **Overview only** in this brief
 - See [blueprint-minecraft-server-gitops](https://github.com/timo-reymann/blueprint-minecraft-server-gitops) for details
 - Maintain bind mount / `restart: unless-stopped` / `USE_AIKAR_FLAGS` principles
-- systemd compose startup still **forbidden** 窶・rely on Docker restart policy
+- systemd compose startup still **forbidden** — rely on Docker restart policy
 
 #### Minimum Components
 
 - compose + `.env.example` in Git repository
-- Deploy webhook 竊・`git pull && make update`
+- Deploy webhook → `git pull && make update`
 - Manual backup (`make backup`) before deploy
 
 ---
@@ -1352,7 +1354,7 @@ services:
       MEMORY: "${MEMORY:-2G}"
       USE_AIKAR_FLAGS: "TRUE"
       OVERRIDE_SERVER_PROPERTIES: "TRUE"
-      MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"
+      MOTD: "§6${SERVER_NAME}§r"
       MAX_PLAYERS: "${MAX_PLAYERS:-5}"
       UID: "${UID:-1000}"
       GID: "${GID:-1000}"
@@ -1365,7 +1367,7 @@ services:
 
 ```dotenv
 SERVER_NAME=vanilla-test
-MOTD=ﾂｧ6vanilla-testﾂｧr
+MOTD=§6vanilla-test§r
 TYPE=VANILLA
 VERSION=1.21.1
 MEMORY=2G
@@ -1380,14 +1382,14 @@ MAX_PLAYERS=5
 
 ---
 
-## Chapter 8 窶・Environment Variable Reference
+## Chapter 8 — Environment Variable Reference
 
 ### 8.1 Common Project Variables
 
 | Variable | Required | Description | Example |
 |------|------|------|-----|
 | **`SERVER_NAME`** | **Yes** | Set during discovery. Root dir, backup name, Compose name | `survival-2024` |
-| **`MOTD`** | **Yes** | Server list MOTD. Auto-generated one line from `SERVER_NAME` | `ﾂｧ6survival-2024ﾂｧr` |
+| **`MOTD`** | **Yes** | Server list MOTD. Auto-generated one line from `SERVER_NAME` | `§6survival-2024§r` |
 | `COMPOSE_PROJECT_NAME` | Yes | Docker Compose project name | `survival-2024` |
 | `MC_PORT` | No | Java port | `25565` |
 | `RCON_PORT` | No | RCON port | `25575` |
@@ -1451,12 +1453,12 @@ MAX_PLAYERS=5
 
 ---
 
-## Chapter 9 窶・Agent Execution Checklist
+## Chapter 9 — Agent Execution Checklist
 
 ### Phase 0: Environment Verification
 
 - [ ] **Confirm and validate `SERVER_NAME` with user (highest priority)**
-- [ ] **After `SERVER_NAME` is set, auto-set `MOTD=ﾂｧ6${SERVER_NAME}ﾂｧr`**
+- [ ] **After `SERVER_NAME` is set, auto-set `MOTD=§6${SERVER_NAME}§r`**
 - [ ] Create project at `~/servers/${SERVER_NAME}/`
 - [ ] Verify `docker --version` / `docker compose version`
 - [ ] Check free ports (Linux: `ss -tlnp`, Windows: `netstat -an`)
@@ -1504,7 +1506,7 @@ MAX_PLAYERS=5
 
 ---
 
-## Chapter 10 窶・Security
+## Chapter 10 — Security
 
 ### 10.1 Authentication
 
@@ -1544,13 +1546,13 @@ Set the generated value as `RCON_PASSWORD` in `.env`. Never commit to git.
 
 ### 10.5 Prohibited Operations
 
-- `docker compose down -v` 窶・**absolutely forbidden** (also document in README)
-- Committing `.env` to git 窶・**forbidden**
-- Default RCON password 窶・**forbidden**
+- `docker compose down -v` — **absolutely forbidden** (also document in README)
+- Committing `.env` to git — **forbidden**
+- Default RCON password — **forbidden**
 
 ---
 
-## Chapter 11 窶・Troubleshooting
+## Chapter 11 — Troubleshooting
 
 ### 11.1 OS-Specific Remediation Table
 
@@ -1559,9 +1561,9 @@ Set the generated value as `RCON_PASSWORD` in `.env`. Never commit to git.
 | Permission denied on `data/` | `sudo chown -R $(id -u):$(id -g) data` | Move inside WSL |
 | Port in use | `ss -tlnp \| grep 25565` | `netstat -ano \| findstr 25565` |
 | Slow I/O | Check disk with `iostat` | Using path outside WSL (`/mnt/c`) |
-| OOM Killed | `dmesg \| grep -i oom`, increase `MEMORY` | Docker Desktop 竊・Resources 竊・increase Memory |
+| OOM Killed | `dmesg \| grep -i oom`, increase `MEMORY` | Docker Desktop → Resources → increase Memory |
 | Firewall | `sudo ufw status` | Windows Defender Firewall |
-| Line ending issues | 窶・| `* text=auto` in `.gitattributes` |
+| Line ending issues | — | `* text=auto` in `.gitattributes` |
 | MOTD not shown | Check `OVERRIDE_SERVER_PROPERTIES` | Same |
 | Container restart loop | Check cause with `make logs` | Same |
 | MOD download failure | Verify `CF_API_KEY` / network | Check WSL DNS settings |
@@ -1585,30 +1587,30 @@ docker compose logs  # check error messages
 
 ```bash
 make logs
-# Version mismatch 竊・pin VERSION
-# MOD incompatibility 竊・restore from backup
+# Version mismatch → pin VERSION
+# MOD incompatibility → restore from backup
 ```
 
 ### 11.3 WSL2-Specific
 
 **Insufficient memory**:
 
-Increase in `%UserProfile%\.wslconfig` with `memory=8GB`, etc. 竊・`wsl --shutdown`
+Increase in `%UserProfile%\.wslconfig` with `memory=8GB`, etc. → `wsl --shutdown`
 
 **Docker Desktop integration failure**:
 
-Settings 竊・Resources 竊・WSL Integration 竊・turn ON the distro in use
+Settings → Resources → WSL Integration → turn ON the distro in use
 
 **`/mnt/c` placement detected**:
 
 ```bash
 make check-path
-# ERROR 竊・move to ~/servers/${SERVER_NAME}/
+# ERROR → move to ~/servers/${SERVER_NAME}/
 ```
 
 ---
 
-## Chapter 12 窶・Sample User Prompts
+## Chapter 12 — Sample User Prompts
 
 Examples the user can copy-paste to an AI agent. The agent builds according to this brief.
 
@@ -1654,7 +1656,7 @@ Examples the user can copy-paste to an AI agent. The agent builds according to t
 
 ---
 
-## Chapter 13 窶・Reference Links
+## Chapter 13 — Reference Links
 
 ### Primary Repositories
 
@@ -1688,7 +1690,7 @@ The following are in-game AI bots and **out of scope**:
 
 ---
 
-## Appendix A 窶・Prohibited Practices Summary
+## Appendix A — Prohibited Practices Summary
 
 | # | Prohibited | Alternative |
 |---|----------|------|
@@ -1698,14 +1700,14 @@ The following are in-game AI bots and **out of scope**:
 | 4 | Automatic backup (cron, etc.) | Manual `make backup` |
 | 5 | Windows `/mnt/c/` placement | Placement inside WSL home |
 | 6 | `USE_AIKAR_FLAGS: "FALSE"` | Always `"TRUE"` |
-| 7 | Omitting MOTD | `ﾂｧ6${SERVER_NAME}ﾂｧr` |
+| 7 | Omitting MOTD | `§6${SERVER_NAME}§r` |
 | 8 | Fixed name `minecraft-server/` | `${SERVER_NAME}/` |
 | 9 | CurseForge server-only zip | Client pack URL |
 | 10 | Velocity with `127.0.0.1` | Docker service name (`lobby:25565`) |
 
 ---
 
-## Appendix B 窶・Research Summary (GitHub Pioneers)
+## Appendix B — Research Summary (GitHub Pioneers)
 
 | Use | Representative Repository | Role in This Brief |
 |------|---------------|-------------------|
@@ -1725,3 +1727,953 @@ The following are in-game AI bots and **out of scope**:
 ### UC-A: Paper Plugin Server
 
 #### Overview
+
+The most common setup: a Java server using Bukkit/Spigot-compatible plugins.
+
+#### Prerequisites
+
+- RAM: 4GB+ (for ~10 players)
+- Disk: 10GB+
+- Port: 25565/TCP
+
+#### docker-compose.yml
+
+```yaml
+name: ${COMPOSE_PROJECT_NAME:-survival-2024}
+
+services:
+  mc:
+    image: itzg/minecraft-server:latest
+    pull_policy: daily
+    tty: true
+    stdin_open: true
+    ports:
+      - "${MC_PORT:-25565}:25565"
+      - "${RCON_PORT:-25575}:25575"
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"
+      VERSION: "${VERSION:-LATEST}"
+      MEMORY: "${MEMORY:-4G}"
+      USE_AIKAR_FLAGS: "TRUE"
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
+      MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"
+      MAX_PLAYERS: "${MAX_PLAYERS:-10}"
+      ENABLE_RCON: "${ENABLE_RCON:-TRUE}"
+      RCON_PASSWORD: "${RCON_PASSWORD}"
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
+      ONLINE_MODE: "${ONLINE_MODE:-TRUE}"
+      DIFFICULTY: "${DIFFICULTY:-normal}"
+      WHITE_LIST: "${WHITE_LIST:-FALSE}"
+      # Plugin URL list (comma-separated in env; multiline here)
+      PLUGINS: |
+        https://github.com/EssentialsX/Essentials/releases/latest/download/EssentialsX-2.21.0.jar
+        https://download.luckperms.net/1565/bukkit/loader/LuckPerms-Bukkit-5.4.145.jar
+    volumes:
+      - ./data:/data
+      - ./config/plugins:/plugins:ro
+    restart: unless-stopped
+```
+
+#### Additional `.env.example` fields
+
+```dotenv
+TYPE=PAPER
+VERSION=1.21.1
+MEMORY=4G
+MAX_PLAYERS=10
+ENABLE_RCON=TRUE
+RCON_PASSWORD=your-secure-password-here
+```
+
+#### First startup
+
+**Linux / WSL**:
+
+```bash
+cd ~/servers/${SERVER_NAME}
+cp .env.example .env
+# Edit .env (SERVER_NAME, RCON_PASSWORD, etc.)
+make init
+make config
+make up
+make logs
+```
+
+**Windows (WSL2 recommended)**:
+
+```powershell
+wsl -d Ubuntu
+cd ~/servers/${SERVER_NAME}
+make init && make up
+```
+
+#### Startup verification
+
+Success when logs show:
+
+```
+[Server thread/INFO]: Done (XX.Xs)! For help, type "help"
+```
+
+Check MOTD:
+
+```bash
+make rcon CMD="list"
+```
+
+#### Client connection
+
+- Address: `<host-ip>:25565`
+- LAN: IP on the same network
+- Internet: router port forwarding required
+
+#### Common failures
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| Plugins not loaded | Version mismatch | Use plugin builds for your MC version |
+| Permission denied | UID/GID mismatch | `chown -R $(id -u):$(id -g) data` |
+| MOTD not applied | OVERRIDE not set | `OVERRIDE_SERVER_PROPERTIES: "TRUE"` |
+
+#### References
+
+- [itzg/docker-minecraft-server 窶・Paper](https://docker-minecraft-server.readthedocs.io/en/latest/types-and-platforms/server-types/paper/)
+- [Paper](https://papermc.io/)
+
+---
+
+### UC-B: CurseForge Modpack
+
+#### Overview
+
+Automatically download and build a modpack from CurseForge.
+
+#### Prerequisites
+
+- RAM: **8GB+** (12GB+ for large packs)
+- Disk: **20GB+**
+- `CF_API_KEY` required
+
+#### Obtaining CF_API_KEY
+
+1. Go to https://console.curseforge.com/
+2. Create account / sign in
+3. Generate an API key
+4. Set `CF_API_KEY=...` in `.env` (never commit)
+
+#### docker-compose.yml
+
+```yaml
+name: ${COMPOSE_PROJECT_NAME}
+
+services:
+  mc:
+    image: itzg/minecraft-server:latest
+    pull_policy: daily
+    tty: true
+    stdin_open: true
+    ports:
+      - "${MC_PORT:-25565}:25565"
+    environment:
+      EULA: "TRUE"
+      TYPE: "AUTO_CURSEFORGE"
+      CF_API_KEY: "${CF_API_KEY}"
+      CF_PAGE_URL: "${CF_PAGE_URL}"
+      CF_PARALLEL_DOWNLOADS: "8"
+      MEMORY: "${MEMORY:-8G}"
+      USE_AIKAR_FLAGS: "TRUE"
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
+      MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
+```
+
+#### Additional `.env.example` fields
+
+```dotenv
+TYPE=AUTO_CURSEFORGE
+CF_API_KEY=
+CF_PAGE_URL=https://www.curseforge.com/minecraft/modpacks/all-the-mods-10
+MEMORY=12G
+```
+
+#### Important: do not use server-only zip
+
+CurseForge offers client and server zips. Use the **client** modpack page URL in `CF_PAGE_URL`. Server-only zips may have incomplete mod sets.
+
+#### First startup
+
+First run may take **10窶・0 minutes** to download. Example logs:
+
+```
+[mc-image-helper] Downloading mod ...
+[mc-image-helper] Mod download complete
+```
+
+#### Common failures
+
+| Symptom | Fix |
+|---------|-----|
+| 401 Unauthorized | Check `CF_API_KEY` |
+| OOM Killed | Increase `MEMORY`, adjust `.wslconfig` |
+| Specific mod conflict | `CF_EXCLUDE_MODS` / `CF_FORCE_INCLUDE_MODS` |
+
+---
+
+### UC-C: Modrinth Modpack
+
+#### Overview
+
+Install a Modrinth-hosted modpack by URL.
+
+#### docker-compose.yml
+
+```yaml
+services:
+  mc:
+    image: itzg/minecraft-server:latest
+    environment:
+      EULA: "TRUE"
+      TYPE: "MODRINTH"
+      MODRINTH_MODPACK: "${MODRINTH_MODPACK}"
+      MODRINTH_LOADER: "${MODRINTH_LOADER:-fabric}"
+      VERSION: "${VERSION:-LATEST}"
+      MEMORY: "${MEMORY:-6G}"
+      USE_AIKAR_FLAGS: "TRUE"
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
+      MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
+    volumes:
+      - ./data:/data
+    ports:
+      - "${MC_PORT:-25565}:25565"
+    restart: unless-stopped
+```
+
+#### `.env.example`
+
+```dotenv
+MODRINTH_MODPACK=https://modrinth.com/modpack/fabulously-optimized
+MODRINTH_LOADER=fabric
+VERSION=LATEST
+MEMORY=6G
+```
+
+---
+
+### UC-D: Custom Mod List (Fabric / Forge / NeoForge)
+
+#### Overview
+
+Specify mods individually via Modrinth project slugs.
+
+#### docker-compose.yml
+
+```yaml
+services:
+  mc:
+    image: itzg/minecraft-server:latest
+    environment:
+      EULA: "TRUE"
+      TYPE: "${TYPE:-FABRIC}"
+      VERSION: "${VERSION:-LATEST}"
+      MODRINTH_PROJECTS: |
+        fabric-api
+        lithium
+        sodium?
+      VERSION_FROM_MODRINTH_PROJECTS: "TRUE"
+      MEMORY: "${MEMORY:-4G}"
+      USE_AIKAR_FLAGS: "TRUE"
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
+      MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
+    volumes:
+      - ./data:/data
+    ports:
+      - "${MC_PORT:-25565}:25565"
+    restart: unless-stopped
+```
+
+**`?` suffix**: optional mod (no error if missing)
+
+**TYPE values**: `FABRIC` / `FORGE` / `NEOFORGE`
+
+---
+
+### UC-E: Velocity Proxy + Multiple Paper Servers
+
+#### Overview
+
+Combine lobby + survival (etc.) backends behind Velocity.
+
+#### Prerequisites
+
+- RAM: 2GB+ per server + 512MB for proxy
+- Generate `forwarding.secret` and configure Paper
+
+#### docker-compose.yml
+
+```yaml
+name: ${COMPOSE_PROJECT_NAME}
+
+services:
+  velocity:
+    image: itzg/mc-proxy:latest
+    ports:
+      - "25565:25565"
+    environment:
+      TYPE: "VELOCITY"
+      MEMORY: "512M"
+    volumes:
+      - ./velocity.toml:/config
+      - ./forwarding.secret:/forwarding.secret:ro
+    restart: unless-stopped
+    depends_on:
+      - lobby
+      - survival
+
+  lobby:
+    image: itzg/minecraft-server:latest
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"
+      VERSION: "${VERSION:-LATEST}"
+      MEMORY: "2G"
+      USE_AIKAR_FLAGS: "TRUE"
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
+      MOTD: "ﾂｧ6${SERVER_NAME}-lobbyﾂｧr"
+      ONLINE_MODE: "FALSE"
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
+    volumes:
+      - ./data/lobby:/data
+    restart: unless-stopped
+
+  survival:
+    image: itzg/minecraft-server:latest
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"
+      VERSION: "${VERSION:-LATEST}"
+      MEMORY: "${MEMORY:-4G}"
+      USE_AIKAR_FLAGS: "TRUE"
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
+      MOTD: "ﾂｧ6${SERVER_NAME}-survivalﾂｧr"
+      ONLINE_MODE: "FALSE"
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
+    volumes:
+      - ./data/survival:/data
+    restart: unless-stopped
+```
+
+#### forwarding.secret setup (step by step)
+
+1. Generate secret:
+
+```bash
+openssl rand -hex 16 > forwarding.secret
+chmod 600 forwarding.secret
+```
+
+2. Configure `velocity.toml` (`player-info-forwarding-mode = "modern"`)
+
+3. On each Paper server, `config/paper-global.yml`:
+
+```yaml
+proxies:
+  velocity:
+    enabled: true
+    online-mode: true
+    secret: "<contents of forwarding.secret>"
+```
+
+4. **Use Docker internal DNS**: backend address `lobby:25565` (**not** `127.0.0.1`)
+
+#### Windows mount differences
+
+```yaml
+# Linux / WSL
+- ./velocity.toml:/config
+
+# Windows native
+- ./velocity.toml:/config/velocity.toml
+```
+
+#### References
+
+- [itzg/docker-mc-proxy](https://github.com/itzg/docker-mc-proxy)
+- [heyvaldemar/minecraft-server-proxy-docker-compose](https://github.com/heyvaldemar/minecraft-server-proxy-docker-compose)
+
+---
+
+### UC-F: Bedrock Dedicated Server
+
+#### Overview
+
+Minecraft Bedrock Edition server (PE / Windows 10 / Xbox, etc.).
+
+#### Prerequisites
+
+- Port: **19132/UDP** (not TCP)
+- Image: `itzg/minecraft-bedrock-server`
+
+#### docker-compose.yml
+
+```yaml
+name: ${COMPOSE_PROJECT_NAME}
+
+services:
+  bedrock:
+    image: itzg/minecraft-bedrock-server:latest
+    pull_policy: daily
+    ports:
+      - "19132:19132/udp"
+    environment:
+      EULA: "TRUE"
+      SERVER_NAME: "${SERVER_NAME}"
+      GAMEMODE: "survival"
+      DIFFICULTY: "normal"
+      MAX_PLAYERS: "${MAX_PLAYERS:-10}"
+      ALLOW_CHEATS: "false"
+      LEVEL_NAME: "Bedrock level"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
+```
+
+**Note:** Bedrock does not need `USE_AIKAR_FLAGS` (Java only).
+
+#### Firewall
+
+```bash
+# Linux
+sudo ufw allow 19132/udp
+```
+
+```powershell
+# Windows
+New-NetFirewallRule -DisplayName "Minecraft Bedrock" -Direction Inbound -Protocol UDP -LocalPort 19132 -Action Allow
+```
+
+#### Client connection
+
+- Bedrock client 竊・Servers 竊・`<IP>:19132`
+
+---
+
+### UC-G: Java + Bedrock Cross-Play (Geyser + Floodgate)
+
+#### Overview
+
+Add Geyser / Floodgate plugins to a Java server so Bedrock clients can join.
+
+#### docker-compose.yml
+
+```yaml
+services:
+  mc:
+    image: itzg/minecraft-server:latest
+    ports:
+      - "${MC_PORT:-25565}:25565"
+      - "19132:19132/udp"
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"
+      VERSION: "${VERSION:-LATEST}"
+      MEMORY: "${MEMORY:-4G}"
+      USE_AIKAR_FLAGS: "TRUE"
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
+      MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"
+      PLUGINS: |
+        https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot
+        https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
+```
+
+#### Ports
+
+- 25565/TCP 窶・Java clients
+- 19132/UDP 窶・Bedrock clients
+
+---
+
+### UC-H: Plugin Development Environment
+
+#### Overview
+
+Paper API plugin dev server. Test via hot deploy or restart.
+
+#### Prerequisites
+
+- Local dev machine (WSL2 recommended)
+- Gradle project (separate repo)
+
+#### docker-compose.yml
+
+```yaml
+services:
+  mc:
+    image: itzg/minecraft-server:latest
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"
+      VERSION: "${VERSION:-LATEST}"
+      MEMORY: "2G"
+      USE_AIKAR_FLAGS: "TRUE"
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
+      MOTD: "ﾂｧ6${SERVER_NAME}-devﾂｧr"
+      ONLINE_MODE: "FALSE"
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
+    volumes:
+      - ./data:/data
+      - ./plugins-dev:/data/plugins
+    restart: unless-stopped
+```
+
+#### Dev workflow
+
+1. Gradle `build` 竊・`.jar`
+2. Copy to `plugins-dev/`
+3. `make restart` or RCON `reload confirm` (restart preferred)
+
+#### References
+
+- [KevinTCoughlin/minecraft-server](https://github.com/KevinTCoughlin/minecraft-server)
+
+---
+
+### UC-I: GitOps / VPS Production (Advanced)
+
+#### Overview
+
+GitOps deploy on a VPS. Auto-update via webhook.
+
+#### Policy
+
+- **Overview only** in this brief
+- Details: [blueprint-minecraft-server-gitops](https://github.com/timo-reymann/blueprint-minecraft-server-gitops)
+- Keep bind mount / `restart: unless-stopped` / `USE_AIKAR_FLAGS` principles
+- **Still no systemd** for compose 窶・rely on Docker restart policy
+
+#### Minimum components
+
+- Git repo with compose + `.env.example`
+- Deploy webhook 竊・`git pull && make update`
+- Manual `make backup` before deploy
+
+---
+
+### UC-J: Vanilla Server (Minimal)
+
+#### Overview
+
+Minimal Vanilla Java server without plugins or mods. Good for smoke tests and learning.
+
+#### Prerequisites
+
+- RAM: 2GB+
+- Disk: 5GB+
+
+#### docker-compose.yml
+
+```yaml
+name: ${COMPOSE_PROJECT_NAME}
+
+services:
+  mc:
+    image: itzg/minecraft-server:latest
+    pull_policy: daily
+    tty: true
+    stdin_open: true
+    ports:
+      - "${MC_PORT:-25565}:25565"
+    environment:
+      EULA: "TRUE"
+      TYPE: "VANILLA"
+      VERSION: "${VERSION:-LATEST}"
+      MEMORY: "${MEMORY:-2G}"
+      USE_AIKAR_FLAGS: "TRUE"
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
+      MOTD: "ﾂｧ6${SERVER_NAME}ﾂｧr"
+      MAX_PLAYERS: "${MAX_PLAYERS:-5}"
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
+```
+
+#### `.env.example`
+
+```dotenv
+SERVER_NAME=vanilla-test
+MOTD=ﾂｧ6vanilla-testﾂｧr
+TYPE=VANILLA
+VERSION=1.21.1
+MEMORY=2G
+MAX_PLAYERS=5
+```
+
+#### Startup verification
+
+```
+[Server thread/INFO]: Done (XX.Xs)! For help, type "help"
+```
+
+---
+
+## Chapter 8 窶・Environment Variable Reference
+
+### 8.1 Project-wide variables
+
+| Variable | Required | Description | Example |
+|----------|----------|-------------|---------|
+| **`SERVER_NAME`** | **Yes** | From discovery. Root dir, backup name, Compose name | `survival-2024` |
+| **`MOTD`** | **Yes** | Server list MOTD. Auto one-liner from `SERVER_NAME` | `ﾂｧ6survival-2024ﾂｧr` |
+| `COMPOSE_PROJECT_NAME` | Yes | Docker Compose project name | `survival-2024` |
+| `MC_PORT` | No | Java port | `25565` |
+| `RCON_PORT` | No | RCON port | `25575` |
+
+### 8.2 itzg/minecraft-server main variables
+
+| Variable | Required | Description | Example |
+|----------|----------|-------------|---------|
+| `EULA` | Yes | Mojang EULA acceptance | `TRUE` |
+| `TYPE` | No | Server type | `PAPER`, `VANILLA`, `FABRIC`, `AUTO_CURSEFORGE` |
+| `VERSION` | No | MC version | `1.21.1`, `LATEST` |
+| `MEMORY` | No | JVM heap | `4G` |
+| **`USE_AIKAR_FLAGS`** | **Yes** | JVM tuning. **Always `TRUE`** | `TRUE` |
+| `OVERRIDE_SERVER_PROPERTIES` | Yes | Apply MOTD etc. from env | `TRUE` |
+| `MAX_PLAYERS` | No | Max players | `10` |
+| `ENABLE_RCON` | No | Enable RCON | `TRUE` |
+| `RCON_PASSWORD` | If RCON | Password | in `.env` |
+| `UID` / `GID` | Linux recommended | File owner | `1000` |
+| `ONLINE_MODE` | No | Premium auth | `TRUE` |
+| `DIFFICULTY` | No | Difficulty | `normal` |
+| `WHITE_LIST` | No | Whitelist | `TRUE` |
+| `VIEW_DISTANCE` | No | View distance | `10` |
+| `SPAWN_PROTECTION` | No | Spawn protection radius | `16` |
+
+### 8.3 Modpack-related
+
+| Variable | Required | Description | Example |
+|----------|----------|-------------|---------|
+| `CF_API_KEY` | For CF | CurseForge API key | `.env` |
+| `CF_PAGE_URL` | For CF | Pack URL | `https://www.curseforge.com/...` |
+| `CF_FILE_ID` | For CF | Pin specific file ID | `1234567` |
+| `CF_PARALLEL_DOWNLOADS` | No | Parallel downloads | `8` |
+| `CF_EXCLUDE_MODS` | No | Exclude mod slug | `sodium` |
+| `CF_FORCE_INCLUDE_MODS` | No | Force include mod | `fabric-api` |
+| `MODRINTH_MODPACK` | For MR | Modrinth pack URL | `https://modrinth.com/modpack/...` |
+| `MODRINTH_LOADER` | For MR | Loader | `fabric`, `forge`, `quilt` |
+| `MODRINTH_PROJECTS` | Custom | Mod slug list | `fabric-api\nlithium` |
+| `VERSION_FROM_MODRINTH_PROJECTS` | No | Auto MC version | `TRUE` |
+
+### 8.4 Plugins
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `PLUGINS` | Plugin URL list (newline-separated) | GitHub release URLs |
+| `MODS` | Fabric/Forge mod URLs | Modrinth CDN URLs |
+| `SPIGET_RESOURCES` | Spiget resource IDs | `34315` |
+
+### 8.5 World and game settings
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `LEVEL` | World name | `world` |
+| `MODE` | Game mode | `survival`, `creative` |
+| `PVP` | PVP enabled | `TRUE` |
+| `ALLOW_NETHER` | Nether enabled | `TRUE` |
+| `ANNOUNCE_PLAYER_ACHIEVEMENTS` | Achievement announcements | `TRUE` |
+| `ENABLE_COMMAND_BLOCK` | Command blocks | `FALSE` |
+| `SNOOPER_ENABLED` | Snooper | `FALSE` |
+| `GENERATE_STRUCTURES` | Structure generation | `TRUE` |
+| `HARDCORE` | Hardcore mode | `FALSE` |
+
+---
+
+## Chapter 9 窶・Agent Execution Checklist
+
+### Phase 0: Environment check
+
+- [ ] **Confirm `SERVER_NAME` with user (highest priority)**
+- [ ] **After `SERVER_NAME` is set, auto-set `MOTD=ﾂｧ6${SERVER_NAME}ﾂｧr`**
+- [ ] Create project at `~/servers/${SERVER_NAME}/`
+- [ ] Check `docker --version` / `docker compose version`
+- [ ] Check free ports (Linux: `ss -tlnp`, Windows: `netstat -an`)
+- [ ] Check free disk space
+- [ ] On Windows: decide project location (WSL recommended)
+- [ ] `make check-path` rejects `/mnt/` paths
+
+### Phase 1: Design
+
+- [ ] Discovery complete or defaults documented
+- [ ] UC selected (UC-A through UC-J)
+- [ ] RAM / disk estimates in README
+- [ ] List required API keys (CF, etc.)
+
+### Phase 2: File generation
+
+- [ ] `docker-compose.yml` (bind mount, `restart: unless-stopped`, `USE_AIKAR_FLAGS: TRUE`, `MOTD` required)
+- [ ] `.dockerignore` (exclude `data/`)
+- [ ] `Makefile` (see Chapter 5)
+- [ ] `.env.example` + `.gitignore`
+- [ ] `scripts/backup.sh` + `scripts/restore.sh` (+ `.ps1`)
+- [ ] `README.md` (`make help` listing, OS-specific sections)
+- [ ] Confirm **no** named volumes
+
+### Phase 3: Start and verify
+
+- [ ] `make config`
+- [ ] `make up` (only if user explicitly requests)
+- [ ] `make logs` until ready
+  - Paper: `Done (XX.Xs)! For help, type "help"`
+  - Mods: `Loading ... mods`
+- [ ] `data/` created with correct permissions
+- [ ] MOTD (server name) visible in server list
+- [ ] Client connection test
+
+### Phase 4: Handoff
+
+- [ ] README: connection, MC version, mod requirements
+- [ ] README: start / stop / restart (per OS)
+- [ ] README: backup / restore
+- [ ] README: updates (`make update`)
+- [ ] README: troubleshooting
+- [ ] `.env` in gitignore
+- [ ] Confirm **no** systemd / cron configured
+
+---
+
+## Chapter 10 窶・Security
+
+### 10.1 Authentication
+
+- Default `ONLINE_MODE=TRUE` (official Minecraft accounts)
+- For internet exposure, recommend `WHITE_LIST=TRUE`
+
+### 10.2 RCON password generation
+
+**Linux / WSL**:
+
+```bash
+openssl rand -hex 16
+```
+
+**Windows (PowerShell)**:
+
+```powershell
+-join ((1..16) | ForEach-Object { '{0:x2}' -f (Get-Random -Maximum 256) })
+```
+
+Put the value in `.env` as `RCON_PASSWORD`. Never commit.
+
+### 10.3 Secrets management
+
+| File | Git |
+|------|-----|
+| `.env` | **Never** |
+| `CF_API_KEY` | `.env` only |
+| `forwarding.secret` | **Never** |
+| `RCON_PASSWORD` | `.env` only |
+
+### 10.4 Network
+
+- Internet exposure: firewall 窶・open only required ports
+- RCON (25575): **not** recommended on public internet (use VPN / SSH tunnel if needed)
+- Velocity `forwarding.secret` must match on Paper and Velocity
+
+### 10.5 Forbidden operations
+
+- `docker compose down -v` 窶・**absolutely forbidden** (also document in README)
+- Committing `.env` 窶・**forbidden**
+- Default RCON passwords 窶・**forbidden**
+
+---
+
+## Chapter 11 窶・Troubleshooting
+
+### 11.1 OS-specific fixes
+
+| Symptom | Linux / WSL | Windows |
+|---------|-------------|---------|
+| Permission denied on `data/` | `sudo chown -R $(id -u):$(id -g) data` | Move project into WSL |
+| Port in use | `ss -tlnp \| grep 25565` | `netstat -ano \| findstr 25565` |
+| Slow I/O | Check disk `iostat` | Using `/mnt/c` outside WSL |
+| OOM Killed | `dmesg \| grep -i oom`, increase `MEMORY` | Docker Desktop 竊・Resources 竊・Memory |
+| Firewall | `sudo ufw status` | Windows Defender Firewall |
+| Line endings | 窶・| `.gitattributes` with `* text=auto` |
+| MOTD missing | Check `OVERRIDE_SERVER_PROPERTIES` | Same |
+| Restart loop | `make logs` for cause | Same |
+| Mod download fail | `CF_API_KEY` / network | WSL DNS settings |
+
+### 11.2 Common Docker issues
+
+**Container won't start**:
+
+```bash
+make config          # syntax errors
+docker compose logs  # error messages
+```
+
+**Data missing**:
+
+- With bind mount, `./data` should remain on host
+- Check if `docker compose down -v` was run
+- Check `data.old.*` backup directories
+
+**Fails after image update**:
+
+```bash
+make logs
+# Version mismatch 竊・pin VERSION
+# Mod incompatibility 竊・restore from backup
+```
+
+### 11.3 WSL2-specific
+
+**Low memory**:
+
+Increase `%UserProfile%\.wslconfig` e.g. `memory=8GB` 竊・`wsl --shutdown`
+
+**Docker Desktop integration**:
+
+Settings 竊・Resources 竊・WSL Integration 竊・enable your distro
+
+**`/mnt/c` placement detected**:
+
+```bash
+make check-path
+# ERROR 竊・move to ~/servers/${SERVER_NAME}/
+```
+
+---
+
+## Chapter 12 窶・Sample User Prompts
+
+Examples users can paste to an AI agent. The agent follows this brief.
+
+### Paper (Linux VPS)
+
+> Server name `survival-2024` on Ubuntu VPS, Paper 1.21.1. 10 players, EssentialsX + LuckPerms, 4GB RAM, RCON, manual backup (full data). restart: unless-stopped, no systemd.
+
+### Paper (Windows home)
+
+> Windows 11 + WSL2 Paper server. Server name `friends-mc`. LAN for 3 friends. bind mount for data/. MOTD auto from SERVER_NAME.
+
+### CurseForge modpack
+
+> Server name `atm10-home`, ATM10 from CurseForge. CF_API_KEY set. 12GB RAM. WSL2. bind mount only.
+
+### Modrinth pack
+
+> Server name `fo-server`, Fabulously Optimized from Modrinth. Fabric, 6GB RAM.
+
+### Velocity
+
+> Server name `network-01`, Velocity + lobby + survival. Docker Compose. WSL2. Include forwarding.secret setup.
+
+### Bedrock
+
+> Server name `bedrock-pe`, Bedrock Dedicated Server on Windows + WSL2. UDP 19132.
+
+### Plugin development
+
+> Server name `plugin-dev`, Paper dev environment. ONLINE_MODE=false, 2GB RAM. Mount plugins-dev/.
+
+### Vanilla minimal
+
+> Server name `vanilla-test`, Vanilla 1.21.1. 2GB RAM. Smoke test.
+
+### Custom mods
+
+> Server name `fabric-custom`, Fabric + fabric-api, lithium, sodium from Modrinth. 4GB RAM.
+
+### Cross-play
+
+> Server name `crossplay`, Paper + Geyser + Floodgate. Java and Bedrock.
+
+---
+
+## Chapter 13 窶・Reference Links
+
+### Main repositories
+
+| Use | Repository |
+|-----|------------|
+| General Java server | [itzg/docker-minecraft-server](https://github.com/itzg/docker-minecraft-server) |
+| Bedrock only | [itzg/docker-minecraft-bedrock-server](https://github.com/itzg/docker-minecraft-bedrock-server) |
+| Velocity / BungeeCord | [itzg/docker-mc-proxy](https://github.com/itzg/docker-mc-proxy) |
+| GitOps (Paper) | [timo-reymann/blueprint-minecraft-server-gitops](https://github.com/timo-reymann/blueprint-minecraft-server-gitops) |
+| Plugin development | [KevinTCoughlin/minecraft-server](https://github.com/KevinTCoughlin/minecraft-server) |
+| Proxy example | [heyvaldemar/minecraft-server-proxy-docker-compose](https://github.com/heyvaldemar/minecraft-server-proxy-docker-compose) |
+| IaC (cloud) | [nolte/minecraft-infrastructure](https://github.com/nolte/minecraft-infrastructure) |
+
+### Documentation
+
+- [itzg official docs](https://docker-minecraft-server.readthedocs.io/)
+- [examples directory](https://github.com/itzg/docker-minecraft-server/tree/master/examples)
+- [CurseForge API key](https://console.curseforge.com/)
+- [Modrinth](https://modrinth.com/)
+- [Paper MC](https://papermc.io/)
+- [Velocity](https://docs.papermc.io/velocity/)
+- [Geyser MC](https://geysermc.org/)
+
+### Out of scope (in-game AI bots)
+
+Not covered by this brief:
+
+- Minecraft_AI
+- mindcraft-ce
+- AgentCraft
+
+---
+
+## Appendix A 窶・Forbidden Items Summary
+
+| # | Forbidden | Alternative |
+|---|-----------|-------------|
+| 1 | Docker named volume | bind mount `./data:/data` |
+| 2 | `docker compose down -v` | `make down` (no `-v`) |
+| 3 | systemd unit / cron timer | compose `restart: unless-stopped` |
+| 4 | Automatic backup (cron, etc.) | manual `make backup` |
+| 5 | Windows `/mnt/c/` placement | WSL home directory |
+| 6 | `USE_AIKAR_FLAGS: "FALSE"` | always `"TRUE"` |
+| 7 | Omitting MOTD | `ﾂｧ6${SERVER_NAME}ﾂｧr` |
+| 8 | Fixed name `minecraft-server/` | `${SERVER_NAME}/` |
+| 9 | CurseForge server-only zip | client modpack URL |
+| 10 | Velocity `127.0.0.1` | Docker service name (`lobby:25565`) |
+
+---
+
+## Appendix B 窶・Survey Summary (GitHub Precedents)
+
+| Use | Representative repo | Role in this brief |
+|-----|---------------------|-------------------|
+| General Java server | itzg/docker-minecraft-server | **Primary choice. Base for all UCs** |
+| Bedrock only | itzg/docker-minecraft-bedrock-server | UC-F |
+| Velocity/BungeeCord | itzg/docker-mc-proxy | UC-E |
+| GitOps (Paper) | blueprint-minecraft-server-gitops | UC-I (advanced) |
+| Plugin development | KevinTCoughlin/minecraft-server | UC-H |
+| Proxy example | heyvaldemar/minecraft-server-proxy-docker-compose | UC-E (Windows path notes) |
+| IaC | nolte/minecraft-infrastructure | Appendix (cloud only) |
+
+---
+
+*Follow this brief to build reproducible Minecraft server environments.*

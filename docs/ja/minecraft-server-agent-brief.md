@@ -585,12 +585,10 @@ ${SERVER_NAME}/                    # 例: survival-2024/
 ├── .env.example
 ├── .env                           # gitignore
 ├── .gitignore
-├── README.md
+├── README.md                      # 任意: 英語 README（デフォルト）
 ├── README.ja.md                   # 任意: 日本語 README
-├── README.en.md                   # 任意: 英語 README
-├── AGENTS.md                      # 任意: エージェント入口
+├── AGENTS.md                      # 任意: エージェント入口（英語）
 ├── AGENTS.ja.md                   # 任意: 日本語エージェント入口
-├── AGENTS.en.md                   # 任意: 英語エージェント入口
 ├── docs/
 │   ├── ja/
 │   │   └── minecraft-server-agent-brief.md

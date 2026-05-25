@@ -1,6 +1,41 @@
-# mc-server-agent-brief
+<div align="center">
 
-**Language / 言語**: [English](README.en.md) | [日本語](README.ja.md)
+<p align="center">
+  <img src="docs/assets/logo.png" alt="mc-server-agent-brief" width="100" height="100">
+</p>
+
+<h1 align="center">:sunny: Minecraft サーバー構築 — AI エージェント向け :crescent_moon:</h1>
+
+<p align="center">
+  Docker で Minecraft サーバーを構築する AI エージェント向け指示書と参照実装。
+  <br>
+  Paper / モッドパック / Velocity / Bedrock — Linux・Windows (WSL2)。
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://github.com/itzg/docker-minecraft-server"><img src="https://img.shields.io/badge/Docker-itzg%2Fminecraft--server-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
+  <a href="https://github.com/flll/mc-server-agent-brief"><img src="https://img.shields.io/github/stars/flll/mc-server-agent-brief?style=social" alt="GitHub stars"></a>
+</p>
+
+<h2 align="center">
+  <a href="#クイックスタート">概要</a> |
+  <a href="docs/ja/minecraft-server-agent-brief.md">指示書</a> |
+  <a href="AGENTS.ja.md">Agents</a> |
+  <a href="Makefile">Makefile</a> |
+  <a href="#ライセンス">License</a>
+</h2>
+
+<h4 align="center">Translations:</h4>
+
+<p align="center">
+  <a href="README.md"><img src="https://img.shields.io/badge/-EN-red?style=flat-square" alt="EN"></a> |
+  JP
+</p>
+
+<p align="center"><sub>この指示書が、エージェントの Minecraft サーバー構築の定番ガイドになることを。</sub></p>
+
+</div>
 
 AI エージェント（Cursor / Claude Code 等）が Docker で Minecraft サーバーを構築するための**指示書**と**参照実装**（Makefile・バックアップスクリプト）です。
 

@@ -1,6 +1,11 @@
 # AGENTS.ja.md — エージェント向け最短入口
 
-**Language / 言語**: [English](AGENTS.en.md) | [日本語](AGENTS.ja.md)
+<h4 align="center">Translations:</h4>
+
+<p align="center">
+  <a href="AGENTS.md"><img src="https://img.shields.io/badge/-EN-red?style=flat-square" alt="EN"></a> |
+  JP
+</p>
 
 このリポジトリは **Minecraft サーバーインフラ構築** 用の指示書です。ゲーム内 AI ボット（AgentCraft / Steve 等）ではありません。
 
