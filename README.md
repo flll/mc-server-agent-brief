@@ -1,7 +1,7 @@
 <div align="center">
 
 <p align="center">
-  <img src="docs/assets/logo.png" alt="mc-server-agent-brief" width="100" height="100">
+  <img src="docs/assets/logo.png" alt="mc-server-agent-brief" width="150" height="150">
 </p>
 
 <h1 align="center">:sunny: AI agent brief for Minecraft servers :crescent_moon:</h1>
