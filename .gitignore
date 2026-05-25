@@ -1,0 +1,13 @@
+.env
+data/
+backups/
+*.log
+forwarding.secret
+*.old.*
+
+# Cursor / ローカル作業
+agent-transcripts/
+agent-tools/
+uploads/
+terminals/
+.cursor/
