@@ -1,5 +1,7 @@
 # Minecraft サーバー構築 — AI エージェント向け指示書
 
+**Language / 言語**: [English](../en/minecraft-server-agent-brief.md) | [日本語](../ja/minecraft-server-agent-brief.md)
+
 > **バージョン**: 1.0  
 > **対象読者**: Cursor / Claude Code 等の AI エージェント  
 > **基盤イメージ**: [itzg/docker-minecraft-server](https://github.com/itzg/docker-minecraft-server)（Java）、[itzg/docker-minecraft-bedrock-server](https://github.com/itzg/docker-minecraft-bedrock-server)（Bedrock）
@@ -584,8 +586,16 @@ ${SERVER_NAME}/                    # 例: survival-2024/
 ├── .env                           # gitignore
 ├── .gitignore
 ├── README.md
+├── README.ja.md                   # 任意: 日本語 README
+├── README.en.md                   # 任意: 英語 README
+├── AGENTS.md                      # 任意: エージェント入口
+├── AGENTS.ja.md                   # 任意: 日本語エージェント入口
+├── AGENTS.en.md                   # 任意: 英語エージェント入口
 ├── docs/
-│   └── minecraft-server-agent-brief.md
+│   ├── ja/
+│   │   └── minecraft-server-agent-brief.md
+│   └── en/
+│       └── minecraft-server-agent-brief.md
 ├── config/
 │   └── plugins/                   # 任意: ローカルプラグイン注入
 ├── data/                          # bind mount 先（gitignore）
