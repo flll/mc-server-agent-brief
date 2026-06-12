@@ -1721,4 +1721,45 @@ make check-path
 
 ---
 
+## 付録 C — 運用フェーズの知見（modded サーバー実運用より）
+
+> 大規模 modpack サーバー（NeoForge 1.21.1・MOD 265 個）を 9 リリース運用して得た知見。
+> 「ユーザーがエージェントに頼んだこと」を一次資料として汎用化したもの。
+
+### C.1 テンプレートから運用リポジトリへの卒業（必須手順）
+
+本リポジトリから構成したプロジェクトにサーバーデータが積み重なると、**上流の fork としての意味を失う**（実例: origin がテンプレートを指したまま運用コミットが積まれ、jar/mrpack で .git が 6.8GB に肥大、push 不可能に）。**サーバー稼働開始の時点で以下を実施する**:
+
+1. 全体バックアップ（`make down` → 外部ディスクへ cp → サイズ・ファイル検証）
+2. 旧 `.git` をリポジトリ外へアーカイブして新規 `git init`
+3. ディレクトリ規約: `/` = エージェントワークディレクトリ、`server/`（または `data/`）= `DATA_DIR`、`legacy/` = 旧版
+4. gitignore を 2 層化:
+   - ルート: mrpack / zip / backups / tmp / 旧 git アーカイブ
+   - DATA_DIR: world / jar（`mods/*.jar*` — typo 拡張子も拾う）/ logs / `server.properties`（RCON パスワード平文）/ `usercache.json` / `ops.json` / `whitelist.json` / `banned-*`
+5. jar は git 管理外とし、`scripts/gen-mods-manifest.sh` の **mods-manifest.tsv（sha256）を構成の正本**にする
+6. 運用知見は `docs/brief-feedback.md` に蓄積し、本テンプレートへ PR で還流する
+
+### C.2 MOD 更新の標準フロー
+
+1. **`make backup`（例外なし）** → 2. `scripts/download-mod.sh` で取得（Modrinth → CurseForge → GitHub の順、[agent-mod-download.md](agent-mod-download.md) 参照）→ 3. 旧 jar 削除 → 4. manifest 再生成 → 5. `make restart` + ログでロード確認 → 6. 日本語コミット（push はユーザー明示時のみ）
+
+### C.3 クライアント配布（mrpack）
+
+- index の hash は**サーバー jar 正本と一致**させる。Modrinth CDN と不一致の jar は `overrides/mods/` 同梱に切り替える（不一致のままだとランチャーが hash 検証で「Unknown error」を出し、Retry では直らない）
+- クライアントには**新規 instance への再インポートを案内**する。既存 instance 上書きは古い jar / index が残り接続拒否の原因
+- 配布物はオブジェクトストレージ（R2 等）を正本とし、バージョンごとに別ファイル名で旧版も残す
+
+### C.4 modded トラブルシュートの定型
+
+| パターン | 対処 |
+|----------|------|
+| 「壊れた」報告だがクラッシュレポートなし | クラッシュハンドラ MOD（Neruina 等）が tick 例外を握りつぶしている。`latest.log` の WARN を見る |
+| 原因 MOD の特定 | スタックトレースの mixin 名 `handler$xxx$<modid>$...` で即特定できる |
+| 専用サーバーのみ desync / ゴースト | ネットワーク経路設定を疑う。**サーバーとクライアントの設定値一致が必須** |
+| fix 系 MOD 導入後の別不具合 | 対象外の contraption にも mixin が発火する副作用パターン。null ガード入り更新版を探すか削除 |
+| 放棄された fix MOD | 本体側が公式対応した時点で削除する（残すと壊す側に回る） |
+| `Can't keep up!` | 負荷警告であり、直近の例外の根本原因ではないことが多い |
+
+---
+
 *本指示書に従い、エージェントは再現性の高い Minecraft サーバー環境を構築すること。*

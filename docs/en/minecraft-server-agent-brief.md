@@ -2676,4 +2676,45 @@ Not covered by this brief:
 
 ---
 
+## Appendix C — Operations-Phase Lessons (from running a modded server)
+
+> Distilled from operating a large modpack server (NeoForge 1.21.1, 265 mods) across 9 releases.
+> Generalized from what users actually asked the agent to do.
+
+### C.1 Graduating from template to operations repository (mandatory)
+
+Once server data accumulates in a project built from this template, it **loses all meaning as a fork of the upstream** (real case: origin still pointed at the template while operational commits piled up; jars/mrpacks bloated .git to 6.8GB and made pushing impossible). **Do the following as soon as the server goes live**:
+
+1. Full backup (`make down` → cp to external disk → verify size/files)
+2. Archive the old `.git` outside the repo and run a fresh `git init`
+3. Directory convention: `/` = agent work directory, `server/` (or `data/`) = `DATA_DIR`, `legacy/` = old versions
+4. Two-layer gitignore:
+   - Root: mrpack / zip / backups / tmp / old git archive
+   - DATA_DIR: world / jars (`mods/*.jar*` — catches typo extensions too) / logs / `server.properties` (plaintext RCON password) / `usercache.json` / `ops.json` / `whitelist.json` / `banned-*`
+5. Keep jars out of git; make `scripts/gen-mods-manifest.sh` output (**mods-manifest.tsv** with sha256) the source of truth
+6. Accumulate operational lessons in `docs/brief-feedback.md` and feed them back to this template via PR
+
+### C.2 Standard mod-update flow
+
+1. **`make backup` (no exceptions)** → 2. fetch via `scripts/download-mod.sh` (Modrinth → CurseForge → GitHub; see [agent-mod-download.md](agent-mod-download.md)) → 3. delete old jars → 4. regenerate manifest → 5. `make restart` + confirm load in logs → 6. commit (push only when the user explicitly asks)
+
+### C.3 Client distribution (mrpack)
+
+- Index hashes must **match the server jars exactly**. For jars that differ from the Modrinth CDN, embed them under `overrides/mods/` instead (mismatches make launchers fail hash checks with "Unknown error", and Retry never fixes it)
+- Tell players to **import into a fresh instance**. Overwriting an existing instance leaves stale jars/indexes behind and causes connection rejections
+- Treat object storage (R2 etc.) as the canonical distribution channel; use distinct filenames per version and keep old versions
+
+### C.4 Modded troubleshooting patterns
+
+| Pattern | Fix |
+|---------|-----|
+| "It broke" but no crash report | A crash-handler mod (Neruina etc.) swallowed the tick exception. Check WARNs in `latest.log` |
+| Identifying the culprit mod | The mixin name in the stack trace — `handler$xxx$<modid>$...` — identifies it immediately |
+| Desync/ghosting on dedicated servers only | Suspect network-path settings. **Server and client values must match** |
+| New breakage after adding a fix mod | Its mixin may fire on contraptions it wasn't designed for. Look for an updated build with null guards, or remove it |
+| Abandoned fix mods | Remove them once the base mod gains official support (they start breaking things instead) |
+| `Can't keep up!` | A load warning — usually not the root cause of a nearby exception |
+
+---
+
 *Follow this brief to build reproducible Minecraft server environments.*

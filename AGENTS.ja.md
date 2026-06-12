@@ -22,6 +22,7 @@
 3. ホスト OS 確認（Linux / Windows+WSL2）
 4. 第1章ヒアリング → ユースケース選定 → ファイル生成
 5. `make config` で構文検証 → ユーザー引き渡し
+6. サーバー稼働開始後は**独立した運用リポジトリへ卒業**（ブリーフ付録 C.1）
 
 ## 禁止事項
 
@@ -32,6 +33,14 @@
 | systemd unit / cron timer | OS 自動起動・定期実行なし |
 | `/mnt/c/...` へのプロジェクト配置 | WSL I/O 性能劣化 |
 | `USE_AIKAR_FLAGS` 省略 | Java サーバーでは常時 `TRUE` |
+| jar / mrpack / zip の git 追加 | リポジトリ肥大（実例: .git 6.8GB）。`mods-manifest.tsv` で管理 |
+| `make backup` なしの MOD 変更 | 運用での例外なしルール |
+
+## 障害調査の定型（modded）
+
+- クラッシュレポートが無い「壊れた」: クラッシュハンドラ MOD が例外を握りつぶしている可能性 — `latest.log` の WARN を見る
+- 原因 MOD: スタックトレースの mixin 名 `handler$xxx$<modid>$...` で即特定
+- 詳細はブリーフ付録 C.4
 
 ## 必須設定
 
@@ -44,6 +53,9 @@
 
 - [Makefile](Makefile) — 日常操作
 - [scripts/backup.sh](scripts/backup.sh) / [scripts/restore.sh](scripts/restore.sh)
+- [scripts/download-mod.sh](scripts/download-mod.sh) — Modrinth / CurseForge MOD 取得（[手順](docs/ja/agent-mod-download.md)）
+- [scripts/gen-mods-manifest.sh](scripts/gen-mods-manifest.sh) — mods-manifest.tsv（sha256 正本・jar を git 外に保つ）
+- [scripts/diff-client-mods.sh](scripts/diff-client-mods.sh) — サーバー/クライアント jar 差分
 - [.env.example](.env.example)
 
 ## 外部参照

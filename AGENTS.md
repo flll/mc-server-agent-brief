@@ -22,6 +22,7 @@ Before you start, **read the full brief** below, then implement.
 3. Confirm host OS (Linux / Windows+WSL2)
 4. Chapter 1 discovery → pick use case → generate files
 5. `make config` for syntax check → hand off to user
+6. Once the server goes live, **graduate it into an independent operations repository** (Appendix C.1 of the brief)
 
 ## Forbidden
 
@@ -32,6 +33,14 @@ Before you start, **read the full brief** below, then implement.
 | systemd unit / cron timer | No OS auto-start or scheduled jobs |
 | Project under `/mnt/c/...` | WSL I/O degradation |
 | Omitting `USE_AIKAR_FLAGS` | Always `TRUE` on Java servers |
+| Committing jars / mrpacks / zips to git | Repo bloat (real case: 6.8GB .git) — use `mods-manifest.tsv` instead |
+| Changing mods without `make backup` first | No-exception rule from operations |
+
+## Troubleshooting shorthand (modded)
+
+- No crash report but "it broke": a crash-handler mod may have swallowed the exception — check `latest.log` WARNs
+- Culprit mod: the mixin name `handler$xxx$<modid>$...` in the stack trace identifies it immediately
+- Details: Appendix C.4 of the brief
 
 ## Required settings
 
@@ -44,6 +53,9 @@ Before you start, **read the full brief** below, then implement.
 
 - [Makefile](Makefile) — daily operations
 - [scripts/backup.sh](scripts/backup.sh) / [scripts/restore.sh](scripts/restore.sh)
+- [scripts/download-mod.sh](scripts/download-mod.sh) — fetch mods from Modrinth / CurseForge ([guide](docs/en/agent-mod-download.md))
+- [scripts/gen-mods-manifest.sh](scripts/gen-mods-manifest.sh) — mods-manifest.tsv (sha256 source of truth, keeps jars out of git)
+- [scripts/diff-client-mods.sh](scripts/diff-client-mods.sh) — server vs client jar diff
 - [.env.example](.env.example)
 
 ## External references
